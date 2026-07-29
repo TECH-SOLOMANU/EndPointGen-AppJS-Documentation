@@ -1,316 +1,766 @@
-/* ==========================================================
-   EndPointGen Documentation
-   script.js
-========================================================== */
 
-document.addEventListener("DOMContentLoaded", () => {
 
-    /* ============================================
-       Theme
-    ============================================ */
+'use strict';
 
-    const body = document.body;
-    const themeBtn = document.getElementById("themeToggle");
+/*=========================================================
+  DOM READY
+=========================================================*/
 
-    const savedTheme = localStorage.getItem("theme");
+document.addEventListener('DOMContentLoaded', () => {
 
-    if (savedTheme === "dark") {
+    initializeTheme();
+    initializeProgressBar();
+    initializeBackToTop();
+    initializeSmoothScroll();
 
-        body.classList.add("dark");
-        themeBtn.textContent = "☀️ Light Mode";
+});
+
+/*=========================================================
+  HELPERS
+=========================================================*/
+
+const $ = (selector) => document.querySelector(selector);
+
+const $$ = (selector) => document.querySelectorAll(selector);
+
+/*=========================================================
+  THEME
+=========================================================*/
+
+function initializeTheme(){
+
+    const toggle = $('#themeToggle');
+
+    if(!toggle) return;
+
+    const savedTheme = localStorage.getItem('theme');
+
+    if(savedTheme === 'dark'){
+
+        document.body.classList.add('dark');
+
+        toggle.innerHTML = '☀️';
 
     }
 
-    themeBtn.addEventListener("click", () => {
+    toggle.addEventListener('click',()=>{
 
-        body.classList.toggle("dark");
+        document.body.classList.toggle('dark');
 
-        if (body.classList.contains("dark")) {
+        const darkMode =
+            document.body.classList.contains('dark');
 
-            localStorage.setItem("theme", "dark");
-            themeBtn.textContent = "☀️ Light Mode";
+        toggle.innerHTML =
+            darkMode ? '☀️' : '🌙';
 
-        } else {
+        localStorage.setItem(
+            'theme',
+            darkMode ? 'dark' : 'light'
+        );
 
-            localStorage.setItem("theme", "light");
-            themeBtn.textContent = "🌙 Dark Mode";
+    });
+
+}
+
+/*=========================================================
+  READING PROGRESS
+=========================================================*/
+
+function initializeProgressBar(){
+
+    const progress = $('#progress-bar');
+
+    if(!progress) return;
+
+    window.addEventListener('scroll',()=>{
+
+        const total =
+            document.documentElement.scrollHeight -
+            window.innerHeight;
+
+        const percentage =
+            (window.scrollY / total) * 100;
+
+        progress.style.width =
+            percentage + '%';
+
+    },{passive:true});
+
+}
+
+/*=========================================================
+  BACK TO TOP
+=========================================================*/
+
+function initializeBackToTop(){
+
+    const button = $('#backTop');
+
+    if(!button) return;
+
+    window.addEventListener('scroll',()=>{
+
+        if(window.scrollY > 500){
+
+            button.classList.add('show');
+
+        }else{
+
+            button.classList.remove('show');
 
         }
 
+    },{passive:true});
+
+    button.addEventListener('click',()=>{
+
+        window.scrollTo({
+
+            top:0,
+
+            behavior:'smooth'
+
+        });
+
     });
 
-    /* ============================================
-       Mobile Sidebar
-    ============================================ */
+}
 
-    const menuBtn = document.getElementById("menuBtn");
-    const sidebar = document.getElementById("sidebar");
+/*=========================================================
+  SMOOTH SCROLL
+=========================================================*/
 
-    menuBtn.addEventListener("click", () => {
+function initializeSmoothScroll(){
 
-        sidebar.classList.toggle("open");
+    $$('a[href^="#"]').forEach(link=>{
 
-    });
+        link.addEventListener('click',(event)=>{
 
-    /* ============================================
-       Smooth Scroll
-    ============================================ */
+            const id =
+                link.getAttribute('href');
 
-    document.querySelectorAll("nav a").forEach(link => {
+            if(id === '#') return;
 
-        link.addEventListener("click", e => {
+            const target =
+                document.querySelector(id);
 
-            e.preventDefault();
+            if(!target) return;
 
-            const id = link.getAttribute("href");
+            event.preventDefault();
 
-            document.querySelector(id).scrollIntoView({
+            target.scrollIntoView({
 
-                behavior: "smooth",
-                block: "start"
+                behavior:'smooth',
+
+                block:'start'
 
             });
 
-            sidebar.classList.remove("open");
-
         });
 
     });
 
-    /* ============================================
-       ScrollSpy
-    ============================================ */
+}
 
-    const sections = document.querySelectorAll("section");
-    const navLinks = document.querySelectorAll("nav a");
 
-    function activateSection() {
 
-        let current = "";
+function initializeMobileMenu(){
 
-        sections.forEach(section => {
+    const menuButton = $('#mobileMenu');
 
-            const top = window.scrollY;
-            const offset = section.offsetTop - 150;
-            const height = section.offsetHeight;
+    const sidebar = $('.sidebar');
 
-            if (top >= offset && top < offset + height) {
+    const overlay = $('.mobile-overlay');
 
-                current = section.id;
+    if(!menuButton || !sidebar || !overlay) return;
 
-            }
+    menuButton.addEventListener('click',()=>{
 
-        });
+        sidebar.classList.toggle('open');
 
-        navLinks.forEach(link => {
-
-            link.classList.remove("active");
-
-            if (link.getAttribute("href") === "#" + current) {
-
-                link.classList.add("active");
-
-            }
-
-        });
-
-    }
-
-    window.addEventListener("scroll", activateSection);
-
-    activateSection();
-
-    /* ============================================
-       Progress Bar
-    ============================================ */
-
-    const progress = document.getElementById("progressBar");
-
-    function updateProgress() {
-
-        const total = document.documentElement.scrollHeight - window.innerHeight;
-
-        const current = window.scrollY;
-
-        progress.style.width = (current / total) * 100 + "%";
-
-    }
-
-    window.addEventListener("scroll", updateProgress);
-
-    updateProgress();
-
-    /* ============================================
-       Copy Buttons
-    ============================================ */
-
-    document.querySelectorAll(".copy-btn").forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            const code = button.nextElementSibling.innerText;
-
-            navigator.clipboard.writeText(code);
-
-            button.innerText = "Copied ✔";
-
-            setTimeout(() => {
-
-                button.innerText = "Copy";
-
-            }, 1800);
-
-        });
+        overlay.classList.toggle('show');
 
     });
 
-    /* ============================================
-       Search
-    ============================================ */
+    overlay.addEventListener('click',()=>{
 
-    const search = document.getElementById("searchInput");
+        sidebar.classList.remove('open');
 
-    search.addEventListener("keyup", () => {
-
-        const keyword = search.value.toLowerCase();
-
-        navLinks.forEach(link => {
-
-            const text = link.innerText.toLowerCase();
-
-            link.style.display = text.includes(keyword)
-                ? "block"
-                : "none";
-
-        });
+        overlay.classList.remove('show');
 
     });
 
-    /* ============================================
-       Reveal Animation
-    ============================================ */
+}
 
-    const observer = new IntersectionObserver(entries => {
+/*=========================================================
+  SCROLLSPY
+=========================================================*/
 
-        entries.forEach(entry => {
+function initializeScrollSpy(){
 
-            if (entry.isIntersecting) {
+    const sections =
+        $$('section[id]');
 
-                entry.target.style.opacity = "1";
+    const navLinks =
+        $$('.sidebar a[href^="#"]');
 
-                entry.target.style.transform = "translateY(0px)";
+    if(!sections.length) return;
 
-            }
+    const observer =
+        new IntersectionObserver((entries)=>{
+
+            entries.forEach((entry)=>{
+
+                if(!entry.isIntersecting) return;
+
+                navLinks.forEach((link)=>{
+
+                    link.classList.remove('active');
+
+                    if(
+                        link.getAttribute('href') ===
+                        '#' + entry.target.id
+                    ){
+
+                        link.classList.add('active');
+
+                    }
+
+                });
+
+            });
+
+        },{
+
+            rootMargin:'-30% 0px -60% 0px',
+
+            threshold:0
 
         });
 
-    }, {
-
-        threshold: .15
-
-    });
-
-    document.querySelectorAll("section").forEach(section => {
-
-        section.style.opacity = "0";
-        section.style.transform = "translateY(60px)";
-        section.style.transition = ".8s";
+    sections.forEach(section=>{
 
         observer.observe(section);
 
     });
 
-    /* ============================================
-       Keyboard Shortcut
-       Ctrl + K
-    ============================================ */
+}
 
-    document.addEventListener("keydown", e => {
+/*=========================================================
+  TABLE OF CONTENTS
+=========================================================*/
 
-        if (e.ctrlKey && e.key.toLowerCase() === "k") {
+function initializeTOC(){
 
-            e.preventDefault();
+    const sections =
+        $$('section[id]');
 
-            search.focus();
+    const links =
+        $$('.toc a');
+
+    if(!sections.length || !links.length) return;
+
+    const observer =
+        new IntersectionObserver((entries)=>{
+
+            entries.forEach((entry)=>{
+
+                if(!entry.isIntersecting) return;
+
+                links.forEach((link)=>{
+
+                    link.classList.remove('active');
+
+                    if(
+                        link.getAttribute('href') ===
+                        '#' + entry.target.id
+                    ){
+
+                        link.classList.add('active');
+
+                    }
+
+                });
+
+            });
+
+        },{
+
+            rootMargin:'-30% 0px -60% 0px'
+
+        });
+
+    sections.forEach(section=>{
+
+        observer.observe(section);
+
+    });
+
+}
+
+/*=========================================================
+  SEARCH
+=========================================================*/
+
+function initializeSearch(){
+
+    const search =
+        $('#searchInput');
+
+    if(!search) return;
+
+    search.addEventListener('input',()=>{
+
+        const value =
+            search.value
+            .toLowerCase()
+            .trim();
+
+        $$('section').forEach((section)=>{
+
+            const text =
+                section.textContent
+                .toLowerCase();
+
+            section.style.display =
+                text.includes(value)
+                ? ''
+                : 'none';
+
+        });
+
+    });
+
+}
+
+/*=========================================================
+  CTRL + K
+=========================================================*/
+
+function initializeKeyboardShortcuts(){
+
+    document.addEventListener('keydown',(event)=>{
+
+        if(
+            event.ctrlKey &&
+            event.key.toLowerCase()==='k'
+        ){
+
+            event.preventDefault();
+
+            const input =
+                $('#searchInput');
+
+            if(input){
+
+                input.focus();
+
+                input.select();
+
+            }
 
         }
 
     });
 
-    /* ============================================
-       Floating Hero Animation
-    ============================================ */
+}
 
-    const hero = document.querySelector(".hero");
+/*=========================================================
+  REGISTER
+=========================================================*/
 
-    window.addEventListener("mousemove", e => {
+document.addEventListener('DOMContentLoaded',()=>{
 
-        const x = (window.innerWidth / 2 - e.clientX) / 40;
-        const y = (window.innerHeight / 2 - e.clientY) / 40;
+    initializeMobileMenu();
 
-        hero.style.transform =
-            `rotateY(${x}deg) rotateX(${-y}deg)`;
+    initializeScrollSpy();
 
-    });
+    initializeTOC();
 
-    /* ============================================
-       Card Hover Tilt
-    ============================================ */
+    initializeSearch();
 
-    document.querySelectorAll(".card").forEach(card => {
-
-        card.addEventListener("mousemove", e => {
-
-            const rect = card.getBoundingClientRect();
-
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const rotateX = -(y - rect.height / 2) / 18;
-            const rotateY = (x - rect.width / 2) / 18;
-
-            card.style.transform =
-                `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.03)`;
-
-        });
-
-        card.addEventListener("mouseleave", () => {
-
-            card.style.transform =
-                "rotateX(0deg) rotateY(0deg) scale(1)";
-
-        });
-
-    });
-
-    /* ============================================
-       Highlight Current Code Block
-    ============================================ */
-
-    document.querySelectorAll(".code-block").forEach(block => {
-
-        block.addEventListener("mouseenter", () => {
-
-            block.style.boxShadow =
-                "0 0 30px rgba(99,102,241,.35)";
-
-        });
-
-        block.addEventListener("mouseleave", () => {
-
-            block.style.boxShadow = "";
-
-        });
-
-    });
-
-    /* ============================================
-       Footer Year
-    ============================================ */
-
-    const footer = document.querySelector("footer");
-
-    footer.innerHTML =
-        `© ${new Date().getFullYear()} EndPointGen Documentation | Built with HTML, CSS & JavaScript`;
+    initializeKeyboardShortcuts();
 
 });
+
+
+
+
+function highlightSearchResults(query){
+
+    if(!query) return;
+
+    document.querySelectorAll("mark").forEach(mark=>{
+
+        const parent = mark.parentNode;
+
+        parent.replaceChild(
+            document.createTextNode(mark.textContent),
+            mark
+        );
+
+        parent.normalize();
+
+    });
+
+    document.querySelectorAll("section").forEach(section=>{
+
+        if(!section.innerHTML.toLowerCase().includes(query)) return;
+
+        const regex = new RegExp(query,"gi");
+
+        section.innerHTML = section.innerHTML.replace(
+
+            regex,
+
+            match => `<mark>${match}</mark>`
+
+        );
+
+    });
+
+}
+
+/*=========================================================
+  ESC KEY
+=========================================================*/
+
+function initializeEscapeKey(){
+
+    document.addEventListener("keydown",(event)=>{
+
+        if(event.key !== "Escape") return;
+
+        $("#searchInput")?.blur();
+
+        $(".sidebar")?.classList.remove("open");
+
+        $(".mobile-overlay")?.classList.remove("show");
+
+    });
+
+}
+
+/*=========================================================
+  ACTIVE SECTION TITLE
+=========================================================*/
+
+function initializeDocumentTitle(){
+
+    const sections = $$("section[id]");
+
+    if(!sections.length) return;
+
+    const observer = new IntersectionObserver((entries)=>{
+
+        entries.forEach(entry=>{
+
+            if(!entry.isIntersecting) return;
+
+            const heading =
+
+                entry.target.querySelector("h2");
+
+            if(!heading) return;
+
+            document.title =
+
+                heading.textContent +
+
+                " • EndPointGen Docs";
+
+        });
+
+    },{
+
+        threshold:.45
+
+    });
+
+    sections.forEach(section=>{
+
+        observer.observe(section);
+
+    });
+
+}
+
+/*=========================================================
+  SAFE CONSOLE
+=========================================================*/
+
+function initializeLogger(){
+
+    console.info(
+
+        "%cEndPointGen Documentation",
+
+        "color:#4f46e5;font-size:18px;font-weight:bold"
+
+    );
+
+    console.info(
+
+        "Documentation initialized successfully."
+
+    );
+
+}
+
+/*=========================================================
+  ERROR HANDLER
+=========================================================*/
+
+window.addEventListener("error",(event)=>{
+
+    console.error(
+
+        "Runtime Error:",
+
+        event.message
+
+    );
+
+});
+
+/*=========================================================
+  OPTIONAL SERVICE WORKER
+=========================================================*/
+
+function registerServiceWorker(){
+
+    if(
+
+        "serviceWorker" in navigator
+
+    ){
+
+        navigator.serviceWorker
+
+            .register("./sw.js")
+
+            .catch(()=>{});
+
+    }
+
+}
+
+/*=========================================================
+  FINAL INITIALIZATION
+=========================================================*/
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    initializeEscapeKey();
+
+    initializeDocumentTitle();
+
+    initializeLogger();
+
+    registerServiceWorker();
+
+});
+
+
+
+
+function initializeCopyButtons(){
+
+    const codeBlocks = $$('pre');
+
+    if(!codeBlocks.length) return;
+
+    codeBlocks.forEach((block)=>{
+
+        const button = document.createElement('button');
+
+        button.className = 'copy-btn';
+
+        button.textContent = 'Copy';
+
+        block.appendChild(button);
+
+        button.addEventListener('click',async()=>{
+
+            try{
+
+                const code = block.querySelector('code')
+                    ? block.querySelector('code').innerText
+                    : block.innerText.replace('Copy','');
+
+                await navigator.clipboard.writeText(code);
+
+                button.textContent = 'Copied ✓';
+
+                setTimeout(()=>{
+
+                    button.textContent = 'Copy';
+
+                },2000);
+
+            }catch(error){
+
+                console.error(error);
+
+                button.textContent = 'Failed';
+
+            }
+
+        });
+
+    });
+
+}
+
+/*=========================================================
+  SCROLL REVEAL
+=========================================================*/
+
+function initializeRevealAnimations(){
+
+    const elements = $$(
+        '.feature-card,.doc-card,.flow-card,.timeline-item,.callout'
+    );
+
+    if(!elements.length) return;
+
+    const observer = new IntersectionObserver((entries)=>{
+
+        entries.forEach((entry)=>{
+
+            if(entry.isIntersecting){
+
+                entry.target.classList.add('fade-up');
+
+                observer.unobserve(entry.target);
+
+            }
+
+        });
+
+    },{
+
+        threshold:.15
+
+    });
+
+    elements.forEach((element)=>{
+
+        observer.observe(element);
+
+    });
+
+}
+
+/*=========================================================
+  LAZY IMAGES
+=========================================================*/
+
+function initializeLazyImages(){
+
+    const images = $$('img[data-src]');
+
+    if(!images.length) return;
+
+    const observer = new IntersectionObserver((entries)=>{
+
+        entries.forEach((entry)=>{
+
+            if(!entry.isIntersecting) return;
+
+            const image = entry.target;
+
+            image.src = image.dataset.src;
+
+            image.removeAttribute('data-src');
+
+            observer.unobserve(image);
+
+        });
+
+    });
+
+    images.forEach((image)=>{
+
+        observer.observe(image);
+
+    });
+
+}
+
+/*=========================================================
+  DEBOUNCE
+=========================================================*/
+
+function debounce(callback,delay=200){
+
+    let timer;
+
+    return(...args)=>{
+
+        clearTimeout(timer);
+
+        timer = setTimeout(()=>{
+
+            callback(...args);
+
+        },delay);
+
+    };
+
+}
+
+/*=========================================================
+  WINDOW RESIZE
+=========================================================*/
+
+function initializeResizeHandler(){
+
+    const resize = debounce(()=>{
+
+        if(window.innerWidth > 768){
+
+            $('.sidebar')?.classList.remove('open');
+
+            $('.mobile-overlay')?.classList.remove('show');
+
+        }
+
+    },150);
+
+    window.addEventListener('resize',resize);
+
+}
+
+/*=========================================================
+  PERFORMANCE
+=========================================================*/
+
+function initializePerformance(){
+
+    window.addEventListener('load',()=>{
+
+        document.body.classList.add('loaded');
+
+    },{once:true});
+
+}
+
+/*=========================================================
+  REGISTER
+=========================================================*/
+
+document.addEventListener('DOMContentLoaded',()=>{
+
+    initializeCopyButtons();
+
+    initializeRevealAnimations();
+
+    initializeLazyImages();
+
+    initializeResizeHandler();
+
+    initializePerformance();
+
+});
+
