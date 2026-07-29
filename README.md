@@ -131,7 +131,7 @@ if (process.env.OPEN_BROWSER === "true") {
 Clone the repository.
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/EndPointGen-AppJS-Documentation.git
+git clone https://github.com/TECH-SOLOMANU/EndPointGen-AppJS-Documentation.git
 ```
 
 Open the project.
