@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EndPointGen - app.js Documentation</title>
+
+    <meta name="description"
+        content="Professional documentation for app.js in EndPointGen.">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+
+    <!-- Progress -->
+
+    <div id="progressBar"></div>
+
+    <!-- Mobile Menu -->
+
+    <button class="menu-btn" id="menuBtn">
+
+        ☰
+
+    </button>
+
+    <!-- Sidebar -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+
+            <span class="logo-icon">⚡</span>
+
+            <div>
+
+                <h2>EndPointGen</h2>
+
+                <p>app.js Docs</p>
+
+            </div>
+
+        </div>
+
+        <div class="search-box">
+
+            <input id="searchInput"
+                type="text"
+                placeholder="Search...">
+
+        </div>
+
+        <nav>
+
+            <a href="#hero">Hero</a>
+
+            <a href="#overview">Overview</a>
+
+            <a href="#responsibilities">Responsibilities</a>
+
+            <a href="#imports">Imports</a>
+
+            <a href="#config">Configuration Loader</a>
+
+            <a href="#express">Express Initialization</a>
+
+            <a href="#routes">Route Registration</a>
+
+            <a href="#middleware">Middleware</a>
+
+            <a href="#startup">Server Startup</a>
+
+            <a href="#browser">Browser Launch</a>
+
+            <a href="#flow">Execution Flow</a>
+
+            <a href="#lifecycle">Request Lifecycle</a>
+
+            <a href="#env">Environment Variables</a>
+
+            <a href="#best">Best Practices</a>
+
+            <a href="#summary">Summary</a>
+
+        </nav>
+
+        <div class="theme-switch">
+
+            <button id="themeToggle">
+
+                🌙 Toggle Theme
+
+            </button>
+
+        </div>
+
+    </aside>
+
+    <!-- Main -->
+
+    <main>
+
+        <!-- Hero -->
+
+        <section id="hero" class="hero">
+
+            <span class="badge">
+
+                Production Documentation
+
+            </span>
+
+            <h1>
+
+                EndPointGen
+
+                <span>app.js</span>
+
+            </h1>
+
+            <p>
+
+                Central application bootstrap responsible for
+                loading configuration, initializing Express,
+                registering middleware, mounting routes,
+                starting the server, and optionally opening
+                the browser.
+
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="#overview" class="btn primary">
+
+                    Get Started
+
+                </a>
+
+                <a href="#flow" class="btn">
+
+                    Execution Flow
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- Overview -->
+
+        <section id="overview">
+
+            <h2>Overview</h2>
+
+            <p>
+
+                app.js is the application's main entry point.
+                It coordinates configuration loading,
+                middleware registration,
+                route mounting,
+                server startup,
+                and development utilities.
+
+            </p>
+
+            <div class="cards">
+
+                <div class="card">
+
+                    <h3>Configuration</h3>
+
+                    <p>Loads environment settings before startup.</p>
+
+                </div>
+
+                <div class="card">
+
+                    <h3>Express</h3>
+
+                    <p>Creates the application instance.</p>
+
+                </div>
+
+                <div class="card">
+
+                    <h3>Routing</h3>
+
+                    <p>Registers API endpoints.</p>
+
+                </div>
+
+                <div class="card">
+
+                    <h3>Server</h3>
+
+                    <p>Starts listening for requests.</p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Responsibilities -->
+
+        <section id="responsibilities">
+
+            <h2>Responsibilities</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Responsibility</th>
+
+                        <th>Description</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>Configuration</td>
+
+                        <td>Loads runtime configuration.</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Express</td>
+
+                        <td>Creates Express instance.</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Middleware</td>
+
+                        <td>Registers global middleware.</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Routes</td>
+
+                        <td>Registers application routes.</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>Server</td>
+
+                        <td>Starts HTTP server.</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+        <!-- Imports -->
+
+        <section id="imports">
+
+            <h2>Imports</h2>
+
+            <div class="code-block">
+
+                <button class="copy-btn">
+
+                    Copy
+
+                </button>
+
+<pre><code>import { exec } from "child_process";
+
+import express from "express";
+
+import loadConfig from "./configLoader.js";
+
+import setupRoutes from "./routes.js";
+
+import startServer from "./server.js";</code></pre>
+
+            </div>
+
+        </section>
+
+        <!-- Configuration -->
+
+        <section id="config">
+
+            <h2>Configuration Loader</h2>
+
+            <p>
+
+                Configuration is loaded immediately before the
+                Express application is created.
+
+            </p>
+
+<div class="code-block">
+
+<button class="copy-btn">Copy</button>
+
+<pre><code>loadConfig();</code></pre>
+
+</div>
+
+        </section>
+
+        <!-- Express -->
+
+        <section id="express">
+
+            <h2>Express Initialization</h2>
+
+<div class="code-block">
+
+<button class="copy-btn">Copy</button>
+
+<pre><code>const app = express();</code></pre>
+
+</div>
+
+        </section>
+
+        <!-- Routes -->
+
+        <section id="routes">
+
+            <h2>Route Registration</h2>
+
+<div class="code-block">
+
+<button class="copy-btn">Copy</button>
+
+<pre><code>app.use("/appjs", routerFromappjs);
+
+app.use("/startEndPoint", routerFromstartEndPoint);
+
+setupRoutes(app);</code></pre>
+
+</div>
+
+        </section>
+
+        <!-- Middleware -->
+
+        <section id="middleware">
+
+            <h2>Middleware</h2>
+
+<div class="code-block">
+
+<button class="copy-btn">Copy</button>
+
+<pre><code>app.use(express.json());</code></pre>
+
+</div>
+
+        </section>
+
+        <!-- Startup -->
+
+        <section id="startup">
+
+            <h2>Server Startup</h2>
+
+<div class="code-block">
+
+<button class="copy-btn">Copy</button>
+
+<pre><code>const { port } = startServer(app);
+
+app.listen(process.env.PORT || 3000, () => {
+
+console.log(...);
+
+});</code></pre>
+
+</div>
+
+        </section>
+
+        <!-- Browser -->
+
+        <section id="browser">
+
+            <h2>Browser Launch</h2>
+
+<div class="code-block">
+
+<button class="copy-btn">Copy</button>
+
+<pre><code>if(process.env.OPEN_BROWSER==="true"){
+
+exec(`start http://localhost:${port}`);
+
+}</code></pre>
+
+</div>
+
+        </section>
+
+        <!-- Flow -->
+
+        <section id="flow">
+
+            <h2>Execution Flow</h2>
+
+            <div class="flow">
+
+                <div>Load Config</div>
+
+                <span>↓</span>
+
+                <div>Create Express</div>
+
+                <span>↓</span>
+
+                <div>Register Middleware</div>
+
+                <span>↓</span>
+
+                <div>Register Routes</div>
+
+                <span>↓</span>
+
+                <div>Start Server</div>
+
+                <span>↓</span>
+
+                <div>Open Browser</div>
+
+            </div>
+
+        </section>
+
+        <!-- Lifecycle -->
+
+        <section id="lifecycle">
+
+            <h2>Request Lifecycle</h2>
+
+            <div class="flow horizontal">
+
+                <div>Client</div>
+
+                <span>→</span>
+
+                <div>Express</div>
+
+                <span>→</span>
+
+                <div>Middleware</div>
+
+                <span>→</span>
+
+                <div>Router</div>
+
+                <span>→</span>
+
+                <div>Response</div>
+
+            </div>
+
+        </section>
+
+        <!-- Env -->
+
+        <section id="env">
+
+            <h2>Environment Variables</h2>
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Name</th>
+
+                        <th>Purpose</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>PORT</td>
+
+                        <td>Application Port</td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>OPEN_BROWSER</td>
+
+                        <td>Automatically opens localhost.</td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+        <!-- Best -->
+
+        <section id="best">
+
+            <h2>Best Practices</h2>
+
+            <div class="cards">
+
+                <div class="card">
+
+                    Keep configuration centralized.
+
+                </div>
+
+                <div class="card">
+
+                    Separate routing logic.
+
+                </div>
+
+                <div class="card">
+
+                    Avoid business logic inside app.js.
+
+                </div>
+
+                <div class="card">
+
+                    Use environment variables.
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- Summary -->
+
+        <section id="summary">
+
+            <h2>Summary</h2>
+
+            <p>
+
+                app.js acts as the orchestration layer of EndPointGen,
+                coordinating configuration, middleware,
+                routing, server startup,
+                and development conveniences.
+
+            </p>
+
+        </section>
+
+        <footer>
+
+            © 2026 EndPointGen Documentation
+
+        </footer>
+
+    </main>
+
+<script src="script.js"></script>
+
+</body>
+
+</html>
