@@ -1,124 +1,116 @@
+/*==================================================
+Generated app.js Documentation
+script.js
+Part 1
+Theme • Progress • Back To Top • FAQ
+==================================================*/
 
-
-'use strict';
-
-/*=========================================================
-  DOM READY
-=========================================================*/
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener("DOMContentLoaded", () => {
 
     initializeTheme();
+
     initializeProgressBar();
+
     initializeBackToTop();
-    initializeSmoothScroll();
+
+    initializeFAQ();
 
 });
 
-/*=========================================================
-  HELPERS
-=========================================================*/
+/*=========================================
+THEME
+=========================================*/
 
-const $ = (selector) => document.querySelector(selector);
+function initializeTheme() {
 
-const $$ = (selector) => document.querySelectorAll(selector);
+    const body = document.body;
 
-/*=========================================================
-  THEME
-=========================================================*/
+    const themeButton = document.getElementById("themeToggle");
 
-function initializeTheme(){
+    const savedTheme = localStorage.getItem("theme");
 
-    const toggle = $('#themeToggle');
+    if (savedTheme === "dark") {
 
-    if(!toggle) return;
-
-    const savedTheme = localStorage.getItem('theme');
-
-    if(savedTheme === 'dark'){
-
-        document.body.classList.add('dark');
-
-        toggle.innerHTML = '☀️';
+        body.classList.add("dark");
 
     }
 
-    toggle.addEventListener('click',()=>{
+    if (!themeButton) return;
 
-        document.body.classList.toggle('dark');
+    themeButton.addEventListener("click", () => {
 
-        const darkMode =
-            document.body.classList.contains('dark');
-
-        toggle.innerHTML =
-            darkMode ? '☀️' : '🌙';
+        body.classList.toggle("dark");
 
         localStorage.setItem(
-            'theme',
-            darkMode ? 'dark' : 'light'
+            "theme",
+            body.classList.contains("dark")
+                ? "dark"
+                : "light"
         );
 
     });
 
 }
 
-/*=========================================================
-  READING PROGRESS
-=========================================================*/
+/*=========================================
+READING PROGRESS
+=========================================*/
 
-function initializeProgressBar(){
+function initializeProgressBar() {
 
-    const progress = $('#progress-bar');
+    const progress = document.getElementById("progressBar");
 
-    if(!progress) return;
+    if (!progress) return;
 
-    window.addEventListener('scroll',()=>{
+    window.addEventListener("scroll", () => {
 
-        const total =
+        const scrollTop =
+            document.documentElement.scrollTop;
+
+        const pageHeight =
             document.documentElement.scrollHeight -
-            window.innerHeight;
+            document.documentElement.clientHeight;
 
         const percentage =
-            (window.scrollY / total) * 100;
+            (scrollTop / pageHeight) * 100;
 
-        progress.style.width =
-            percentage + '%';
+        progress.style.width = percentage + "%";
 
-    },{passive:true});
+    });
 
 }
 
-/*=========================================================
-  BACK TO TOP
-=========================================================*/
+/*=========================================
+BACK TO TOP
+=========================================*/
 
-function initializeBackToTop(){
+function initializeBackToTop() {
 
-    const button = $('#backTop');
+    const button = document.getElementById("backToTop");
 
-    if(!button) return;
+    if (!button) return;
 
-    window.addEventListener('scroll',()=>{
+    window.addEventListener("scroll", () => {
 
-        if(window.scrollY > 500){
+        if (window.scrollY > 500) {
 
-            button.classList.add('show');
+            button.classList.add("show");
 
-        }else{
+        } else {
 
-            button.classList.remove('show');
+            button.classList.remove("show");
 
         }
 
-    },{passive:true});
+    });
 
-    button.addEventListener('click',()=>{
+    button.addEventListener("click", () => {
 
         window.scrollTo({
 
-            top:0,
+            top: 0,
 
-            behavior:'smooth'
+            behavior: "smooth"
 
         });
 
@@ -126,236 +118,484 @@ function initializeBackToTop(){
 
 }
 
-/*=========================================================
-  SMOOTH SCROLL
-=========================================================*/
+/*=========================================
+FAQ ACCORDION
+=========================================*/
 
-function initializeSmoothScroll(){
+function initializeFAQ() {
 
-    $$('a[href^="#"]').forEach(link=>{
+    const items =
+        document.querySelectorAll(".faqItem");
 
-        link.addEventListener('click',(event)=>{
+    items.forEach(item => {
 
-            const id =
-                link.getAttribute('href');
+        const question =
+            item.querySelector(".faqQuestion");
 
-            if(id === '#') return;
+        question.addEventListener("click", () => {
 
-            const target =
-                document.querySelector(id);
+            if (item.classList.contains("active")) {
 
-            if(!target) return;
+                item.classList.remove("active");
 
-            event.preventDefault();
+                return;
 
-            target.scrollIntoView({
+            }
 
-                behavior:'smooth',
+            items.forEach(faq => {
 
-                block:'start'
+                faq.classList.remove("active");
 
             });
 
-        });
-
-    });
-
-}
-
-
-
-function initializeMobileMenu(){
-
-    const menuButton = $('#mobileMenu');
-
-    const sidebar = $('.sidebar');
-
-    const overlay = $('.mobile-overlay');
-
-    if(!menuButton || !sidebar || !overlay) return;
-
-    menuButton.addEventListener('click',()=>{
-
-        sidebar.classList.toggle('open');
-
-        overlay.classList.toggle('show');
-
-    });
-
-    overlay.addEventListener('click',()=>{
-
-        sidebar.classList.remove('open');
-
-        overlay.classList.remove('show');
-
-    });
-
-}
-
-/*=========================================================
-  SCROLLSPY
-=========================================================*/
-
-function initializeScrollSpy(){
-
-    const sections =
-        $$('section[id]');
-
-    const navLinks =
-        $$('.sidebar a[href^="#"]');
-
-    if(!sections.length) return;
-
-    const observer =
-        new IntersectionObserver((entries)=>{
-
-            entries.forEach((entry)=>{
-
-                if(!entry.isIntersecting) return;
-
-                navLinks.forEach((link)=>{
-
-                    link.classList.remove('active');
-
-                    if(
-                        link.getAttribute('href') ===
-                        '#' + entry.target.id
-                    ){
-
-                        link.classList.add('active');
-
-                    }
-
-                });
-
-            });
-
-        },{
-
-            rootMargin:'-30% 0px -60% 0px',
-
-            threshold:0
+            item.classList.add("active");
 
         });
 
-    sections.forEach(section=>{
-
-        observer.observe(section);
-
     });
 
 }
+/*==================================================
+script.js
+Part 2
+ScrollSpy • Search • Copy • Reveal
+==================================================*/
 
-/*=========================================================
-  TABLE OF CONTENTS
-=========================================================*/
+/*=========================================
+INITIALIZE
+=========================================*/
 
-function initializeTOC(){
+document.addEventListener("DOMContentLoaded", () => {
+
+    initializeScrollSpy();
+
+    initializeSearch();
+
+    initializeCopyButtons();
+
+    initializeRevealAnimation();
+
+});
+
+/*=========================================
+SCROLL SPY
+=========================================*/
+
+function initializeScrollSpy() {
 
     const sections =
-        $$('section[id]');
+        document.querySelectorAll("section[id]");
 
     const links =
-        $$('.toc a');
+        document.querySelectorAll(
+            ".rightSidebar a, .sidebar a"
+        );
 
-    if(!sections.length || !links.length) return;
+    window.addEventListener("scroll", () => {
+
+        let current = "";
+
+        sections.forEach(section => {
+
+            const top = section.offsetTop - 120;
+
+            const height = section.offsetHeight;
+
+            if (window.scrollY >= top &&
+                window.scrollY < top + height) {
+
+                current = section.id;
+
+            }
+
+        });
+
+        links.forEach(link => {
+
+            link.classList.remove("active");
+
+            if (
+                link.getAttribute("href") === "#" + current
+            ) {
+
+                link.classList.add("active");
+
+            }
+
+        });
+
+    });
+
+}
+
+/*=========================================
+LIVE SEARCH
+=========================================*/
+
+function initializeSearch() {
+
+    const input =
+        document.querySelector(
+            ".searchContainer input"
+        );
+
+    if (!input) return;
+
+    input.addEventListener("input", () => {
+
+        const keyword =
+            input.value.toLowerCase();
+
+        const sections =
+            document.querySelectorAll("section");
+
+        sections.forEach(section => {
+
+            const text =
+                section.innerText.toLowerCase();
+
+            if (text.includes(keyword)) {
+
+                section.style.display = "";
+
+            } else {
+
+                section.style.display = "none";
+
+            }
+
+        });
+
+    });
+
+}
+
+/*=========================================
+COPY BUTTON
+=========================================*/
+
+function initializeCopyButtons() {
+
+    const buttons =
+        document.querySelectorAll(".copyButton");
+
+    buttons.forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const pre =
+                button.closest(".codeWindow")
+                ?.querySelector("pre");
+
+            if (!pre) return;
+
+            navigator.clipboard.writeText(pre.innerText);
+
+            const oldText = button.innerText;
+
+            button.innerText = "Copied ✓";
+
+            setTimeout(() => {
+
+                button.innerText = oldText;
+
+            }, 1800);
+
+        });
+
+    });
+
+}
+
+/*=========================================
+SCROLL REVEAL
+=========================================*/
+
+function initializeRevealAnimation() {
+
+    const elements =
+        document.querySelectorAll(
+
+            ".overviewCard," +
+            ".importCard," +
+            ".timelineItem," +
+            ".practice," +
+            ".explanationCard"
+
+        );
 
     const observer =
-        new IntersectionObserver((entries)=>{
+        new IntersectionObserver(entries => {
 
-            entries.forEach((entry)=>{
+            entries.forEach(entry => {
 
-                if(!entry.isIntersecting) return;
+                if (entry.isIntersecting) {
 
-                links.forEach((link)=>{
+                    entry.target.classList.add("fadeUp");
 
-                    link.classList.remove('active');
-
-                    if(
-                        link.getAttribute('href') ===
-                        '#' + entry.target.id
-                    ){
-
-                        link.classList.add('active');
-
-                    }
-
-                });
+                }
 
             });
 
-        },{
+        }, {
 
-            rootMargin:'-30% 0px -60% 0px'
+            threshold: .15
 
         });
 
-    sections.forEach(section=>{
+    elements.forEach(element => {
 
-        observer.observe(section);
+        observer.observe(element);
+
+    });
+
+}
+/*==================================================
+script.js
+Part 3
+Mobile Menu • Smooth Scroll • Shortcuts
+==================================================*/
+
+/*=========================================
+INITIALIZE
+=========================================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    initializeMobileSidebar();
+
+    initializeSmoothScroll();
+
+    initializeKeyboardShortcuts();
+
+    initializeSystemTheme();
+
+});
+
+/*=========================================
+MOBILE SIDEBAR
+=========================================*/
+
+function initializeMobileSidebar() {
+
+    const sidebar =
+        document.querySelector(".sidebar");
+
+    const toggle =
+        document.getElementById("menuToggle");
+
+    if (!sidebar || !toggle) return;
+
+    toggle.addEventListener("click", () => {
+
+        sidebar.classList.toggle("open");
+
+    });
+
+    document.addEventListener("click", (event) => {
+
+        if (
+            window.innerWidth > 900 ||
+            !sidebar.classList.contains("open")
+        ) {
+            return;
+        }
+
+        const clickedSidebar =
+            sidebar.contains(event.target);
+
+        const clickedToggle =
+            toggle.contains(event.target);
+
+        if (!clickedSidebar && !clickedToggle) {
+
+            sidebar.classList.remove("open");
+
+        }
 
     });
 
 }
 
-/*=========================================================
-  SEARCH
-=========================================================*/
+/*=========================================
+SMOOTH SCROLL
+=========================================*/
 
-function initializeSearch(){
+function initializeSmoothScroll() {
 
-    const search =
-        $('#searchInput');
+    const links =
+        document.querySelectorAll('a[href^="#"]');
 
-    if(!search) return;
+    links.forEach(link => {
 
-    search.addEventListener('input',()=>{
+        link.addEventListener("click", event => {
 
-        const value =
-            search.value
-            .toLowerCase()
-            .trim();
+            const targetId =
+                link.getAttribute("href");
 
-        $$('section').forEach((section)=>{
+            const target =
+                document.querySelector(targetId);
 
-            const text =
-                section.textContent
-                .toLowerCase();
-
-            section.style.display =
-                text.includes(value)
-                ? ''
-                : 'none';
-
-        });
-
-    });
-
-}
-
-/*=========================================================
-  CTRL + K
-=========================================================*/
-
-function initializeKeyboardShortcuts(){
-
-    document.addEventListener('keydown',(event)=>{
-
-        if(
-            event.ctrlKey &&
-            event.key.toLowerCase()==='k'
-        ){
+            if (!target) return;
 
             event.preventDefault();
 
-            const input =
-                $('#searchInput');
+            window.scrollTo({
 
-            if(input){
+                top: target.offsetTop - 70,
 
-                input.focus();
+                behavior: "smooth"
 
-                input.select();
+            });
+
+            document
+                .querySelector(".sidebar")
+                ?.classList.remove("open");
+
+        });
+
+    });
+
+}
+
+/*=========================================
+KEYBOARD SHORTCUTS
+=========================================*/
+
+function initializeKeyboardShortcuts() {
+
+    document.addEventListener("keydown", event => {
+
+        const search =
+            document.querySelector(
+                ".searchContainer input"
+            );
+
+        if (
+            event.key === "/" &&
+            document.activeElement !== search
+        ) {
+
+            event.preventDefault();
+
+            search?.focus();
+
+        }
+
+        if (event.key === "Escape") {
+
+            search?.blur();
+
+            document
+                .querySelector(".sidebar")
+                ?.classList.remove("open");
+
+        }
+
+    });
+
+}
+
+/*=========================================
+SYSTEM THEME
+=========================================*/
+
+function initializeSystemTheme() {
+
+    if (localStorage.getItem("theme")) {
+
+        return;
+
+    }
+
+    if (
+
+        window.matchMedia(
+
+            "(prefers-color-scheme: dark)"
+
+        ).matches
+
+    ) {
+
+        document.body.classList.add("dark");
+
+    }
+
+}
+/*==================================================
+script.js
+Part 4
+Production Utilities
+==================================================*/
+
+/*=========================================
+INITIALIZE
+=========================================*/
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    initializeActiveSearch();
+
+    initializeLazyLoading();
+
+    initializePerformance();
+
+    initializeAccessibility();
+
+    console.log(
+        "%cGenerated app.js Documentation",
+        "color:#2563eb;font-size:18px;font-weight:bold;"
+    );
+
+    console.log(
+        "Documentation loaded successfully."
+    );
+
+});
+
+/*=========================================
+SEARCH HIGHLIGHT
+=========================================*/
+
+function initializeActiveSearch() {
+
+    const input =
+        document.querySelector(
+            ".searchContainer input"
+        );
+
+    if (!input) return;
+
+    input.addEventListener("keydown", event => {
+
+        if (event.key !== "Enter") return;
+
+        const keyword =
+            input.value.trim().toLowerCase();
+
+        if (!keyword) return;
+
+        const sections =
+            document.querySelectorAll("section");
+
+        for (const section of sections) {
+
+            if (
+                section.innerText
+                    .toLowerCase()
+                    .includes(keyword)
+            ) {
+
+                section.scrollIntoView({
+
+                    behavior: "smooth",
+
+                    block: "start"
+
+                });
+
+                break;
 
             }
 
@@ -365,157 +605,83 @@ function initializeKeyboardShortcuts(){
 
 }
 
-/*=========================================================
-  REGISTER
-=========================================================*/
+/*=========================================
+IMAGE LAZY LOADING
+=========================================*/
 
-document.addEventListener('DOMContentLoaded',()=>{
+function initializeLazyLoading() {
 
-    initializeMobileMenu();
+    const images =
+        document.querySelectorAll("img");
 
-    initializeScrollSpy();
+    images.forEach(image => {
 
-    initializeTOC();
+        image.loading = "lazy";
 
-    initializeSearch();
-
-    initializeKeyboardShortcuts();
-
-});
-
-
-
-
-function highlightSearchResults(query){
-
-    if(!query) return;
-
-    document.querySelectorAll("mark").forEach(mark=>{
-
-        const parent = mark.parentNode;
-
-        parent.replaceChild(
-            document.createTextNode(mark.textContent),
-            mark
-        );
-
-        parent.normalize();
-
-    });
-
-    document.querySelectorAll("section").forEach(section=>{
-
-        if(!section.innerHTML.toLowerCase().includes(query)) return;
-
-        const regex = new RegExp(query,"gi");
-
-        section.innerHTML = section.innerHTML.replace(
-
-            regex,
-
-            match => `<mark>${match}</mark>`
-
-        );
+        image.decoding = "async";
 
     });
 
 }
 
-/*=========================================================
-  ESC KEY
-=========================================================*/
+/*=========================================
+PERFORMANCE
+=========================================*/
 
-function initializeEscapeKey(){
+function initializePerformance() {
 
-    document.addEventListener("keydown",(event)=>{
+    let resizeTimeout;
 
-        if(event.key !== "Escape") return;
+    window.addEventListener("resize", () => {
 
-        $("#searchInput")?.blur();
+        clearTimeout(resizeTimeout);
 
-        $(".sidebar")?.classList.remove("open");
+        resizeTimeout = setTimeout(() => {
 
-        $(".mobile-overlay")?.classList.remove("show");
+            document.body.classList.remove("sidebar-open");
+
+        }, 200);
 
     });
 
 }
 
-/*=========================================================
-  ACTIVE SECTION TITLE
-=========================================================*/
+/*=========================================
+ACCESSIBILITY
+=========================================*/
 
-function initializeDocumentTitle(){
+function initializeAccessibility() {
 
-    const sections = $$("section[id]");
+    document
+        .querySelectorAll("button")
+        .forEach(button => {
 
-    if(!sections.length) return;
+            if (!button.getAttribute("aria-label")) {
 
-    const observer = new IntersectionObserver((entries)=>{
+                const label =
+                    button.innerText.trim() ||
+                    "Button";
 
-        entries.forEach(entry=>{
+                button.setAttribute(
+                    "aria-label",
+                    label
+                );
 
-            if(!entry.isIntersecting) return;
-
-            const heading =
-
-                entry.target.querySelector("h2");
-
-            if(!heading) return;
-
-            document.title =
-
-                heading.textContent +
-
-                " • EndPointGen Docs";
+            }
 
         });
 
-    },{
-
-        threshold:.45
-
-    });
-
-    sections.forEach(section=>{
-
-        observer.observe(section);
-
-    });
-
 }
 
-/*=========================================================
-  SAFE CONSOLE
-=========================================================*/
+/*=========================================
+GLOBAL ERROR HANDLER
+=========================================*/
 
-function initializeLogger(){
-
-    console.info(
-
-        "%cEndPointGen Documentation",
-
-        "color:#4f46e5;font-size:18px;font-weight:bold"
-
-    );
-
-    console.info(
-
-        "Documentation initialized successfully."
-
-    );
-
-}
-
-/*=========================================================
-  ERROR HANDLER
-=========================================================*/
-
-window.addEventListener("error",(event)=>{
+window.addEventListener("error", event => {
 
     console.error(
 
-        "Runtime Error:",
+        "Documentation Error:",
 
         event.message
 
@@ -523,244 +689,24 @@ window.addEventListener("error",(event)=>{
 
 });
 
-/*=========================================================
-  OPTIONAL SERVICE WORKER
-=========================================================*/
+/*=========================================
+UNHANDLED PROMISES
+=========================================*/
 
-function registerServiceWorker(){
+window.addEventListener(
 
-    if(
+    "unhandledrejection",
 
-        "serviceWorker" in navigator
+    event => {
 
-    ){
+        console.error(
 
-        navigator.serviceWorker
+            "Unhandled Promise:",
 
-            .register("./sw.js")
+            event.reason
 
-            .catch(()=>{});
+        );
 
     }
 
-}
-
-/*=========================================================
-  FINAL INITIALIZATION
-=========================================================*/
-
-document.addEventListener("DOMContentLoaded",()=>{
-
-    initializeEscapeKey();
-
-    initializeDocumentTitle();
-
-    initializeLogger();
-
-    registerServiceWorker();
-
-});
-
-
-
-
-function initializeCopyButtons(){
-
-    const codeBlocks = $$('pre');
-
-    if(!codeBlocks.length) return;
-
-    codeBlocks.forEach((block)=>{
-
-        const button = document.createElement('button');
-
-        button.className = 'copy-btn';
-
-        button.textContent = 'Copy';
-
-        block.appendChild(button);
-
-        button.addEventListener('click',async()=>{
-
-            try{
-
-                const code = block.querySelector('code')
-                    ? block.querySelector('code').innerText
-                    : block.innerText.replace('Copy','');
-
-                await navigator.clipboard.writeText(code);
-
-                button.textContent = 'Copied ✓';
-
-                setTimeout(()=>{
-
-                    button.textContent = 'Copy';
-
-                },2000);
-
-            }catch(error){
-
-                console.error(error);
-
-                button.textContent = 'Failed';
-
-            }
-
-        });
-
-    });
-
-}
-
-/*=========================================================
-  SCROLL REVEAL
-=========================================================*/
-
-function initializeRevealAnimations(){
-
-    const elements = $$(
-        '.feature-card,.doc-card,.flow-card,.timeline-item,.callout'
-    );
-
-    if(!elements.length) return;
-
-    const observer = new IntersectionObserver((entries)=>{
-
-        entries.forEach((entry)=>{
-
-            if(entry.isIntersecting){
-
-                entry.target.classList.add('fade-up');
-
-                observer.unobserve(entry.target);
-
-            }
-
-        });
-
-    },{
-
-        threshold:.15
-
-    });
-
-    elements.forEach((element)=>{
-
-        observer.observe(element);
-
-    });
-
-}
-
-/*=========================================================
-  LAZY IMAGES
-=========================================================*/
-
-function initializeLazyImages(){
-
-    const images = $$('img[data-src]');
-
-    if(!images.length) return;
-
-    const observer = new IntersectionObserver((entries)=>{
-
-        entries.forEach((entry)=>{
-
-            if(!entry.isIntersecting) return;
-
-            const image = entry.target;
-
-            image.src = image.dataset.src;
-
-            image.removeAttribute('data-src');
-
-            observer.unobserve(image);
-
-        });
-
-    });
-
-    images.forEach((image)=>{
-
-        observer.observe(image);
-
-    });
-
-}
-
-/*=========================================================
-  DEBOUNCE
-=========================================================*/
-
-function debounce(callback,delay=200){
-
-    let timer;
-
-    return(...args)=>{
-
-        clearTimeout(timer);
-
-        timer = setTimeout(()=>{
-
-            callback(...args);
-
-        },delay);
-
-    };
-
-}
-
-/*=========================================================
-  WINDOW RESIZE
-=========================================================*/
-
-function initializeResizeHandler(){
-
-    const resize = debounce(()=>{
-
-        if(window.innerWidth > 768){
-
-            $('.sidebar')?.classList.remove('open');
-
-            $('.mobile-overlay')?.classList.remove('show');
-
-        }
-
-    },150);
-
-    window.addEventListener('resize',resize);
-
-}
-
-/*=========================================================
-  PERFORMANCE
-=========================================================*/
-
-function initializePerformance(){
-
-    window.addEventListener('load',()=>{
-
-        document.body.classList.add('loaded');
-
-    },{once:true});
-
-}
-
-/*=========================================================
-  REGISTER
-=========================================================*/
-
-document.addEventListener('DOMContentLoaded',()=>{
-
-    initializeCopyButtons();
-
-    initializeRevealAnimations();
-
-    initializeLazyImages();
-
-    initializeResizeHandler();
-
-    initializePerformance();
-
-});
-
+);
